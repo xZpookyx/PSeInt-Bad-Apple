@@ -1,15 +1,14 @@
 import cv2
 import numpy as np
-from numpy.typing import NDArray
 import os
 import sys
 
 def light_to_ascii(light: int) -> str:
     ascii_chars =  " .:-=+*#%@"
-
+    
     if light > 255: light = 255
     if light < 0: light = 0
-    light = round(light / 255 * len(ascii_chars))
+    light = round(light / 255 * (len(ascii_chars) - 1))
     
     return ascii_chars[light]
     
@@ -35,8 +34,8 @@ def main():
         current_path: str = sys.path[0]
         video_path: str = os.path.join(current_path, "Bad apple.mp4")
         output_path: str = os.path.join(current_path, f"output/bad_apple.psc")
-        video_fps: int = 15
-        resolution: tuple[int, int] = (70, int(70 / (4/3)))
+        video_fps: int = 1
+        resolution: tuple[int, int] = (70, int(70 / 3.5))
         
         # Generate file
         with open(output_path, "w") as file:
@@ -69,27 +68,28 @@ def main():
                 cap.release()
                 break
             
-            
             file.write("SubProceso play_video\n")
             
             # for each line in frame
             cap.set(cv2.CAP_PROP_FPS, video_fps)
-            
-            for frame_index in range(1):
+            position_ms: float = 0
+            while True:
                 file.write("\tLimpiar Pantalla;\n")
+                cap.set(cv2.CAP_PROP_POS_MSEC, position_ms)
                 
                 ret, frame = cap.read()
                 if not ret:
                     break
                 
                 frame = cv2.resize(frame, (resolution))
-                gray: NDArray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 for i in range(gray.shape[0]):
                     row: str = ""
                     for j in range(gray.shape[1]):
-                        row += light_to_ascii(gray[0][1])
+                        row += light_to_ascii(gray[i][j])
                     file.write(f"\tEscribir \"{row}\";\n")
                 
+                position_ms += ms
                 file.write(f"\tEsperar {ms} Milisegundos;\n")
             
             file.write("FinSubProceso")
