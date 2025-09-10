@@ -1,4 +1,5 @@
 import cv2
+import math
 import numpy as np
 import os
 import sys
@@ -40,20 +41,69 @@ def main():
         # Generate file
         with open(output_path, "w") as file:
             # Entry
+            title_text: str 
             entry_text: str
             if language == 0:
+                title_text = "!! Rescale the screen until the box fits !!"
                 entry_text = "Press a key to play Bad Apple"
             else:
+                title_text = "!! Reescala la pantalla hasta que se encuadre la caja !!"
                 entry_text = "Presiona una tecla para reproducir Bad Apple"
             
+            # Start algorithm
+            file.write("Algoritmo bad_apple\n")
+            
+            # Head
+            file.write("\tLimpiar pantalla;\n")
+            file.write("\t Escribir ")
+            file.write("\"" + "@" * resolution[0] + "\";\n")
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * (resolution[0] - 2) + "@\";\n")
+            
+            # Title
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * math.floor((resolution[0] - 2 - len(title_text)) / 2) )
+            file.write(title_text)
+            file.write(" " * math.ceil((resolution[0] - 2 - len(title_text)) / 2) + "@\";\n")
+            
+            # Separation
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * (resolution[0] - 2) + "@\";\n")
+            
+            # Entry
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * math.floor((resolution[0] - 2 - len(entry_text)) / 2) )
+            file.write(entry_text)
+            file.write(" " * math.ceil((resolution[0] - 2 - len(entry_text)) / 2) + "@\";\n")
+            
+            # Fill
+            for i in range(resolution[1] - 8):
+                file.write("\t Escribir ")
+                file.write("\"@" + " " * (resolution[0] - 2) + "@\";\n")
+            
+            # Title
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * math.floor((resolution[0] - 2 - len(title_text)) / 2) )
+            file.write(title_text)
+            file.write(" " * math.ceil((resolution[0] - 2 - len(title_text)) / 2) + "@\";\n")
+            
+            # Separation
+            file.write("\t Escribir ")
+            file.write("\"@" + " " * (resolution[0] - 2) + "@\";\n")
+                
+            # End
+            file.write("\t Escribir ")
+            file.write("\"" + "@" * resolution[0] + "\";\n")
+            
+            
+            # End algorithm
             file.write(
-                "Algoritmo bad_apple\n"
-                f"\tEscribir \"{entry_text}\";\n"
                 "\tEsperar Tecla;\n"
                 "\tplay_video;\n"
                 "FinAlgoritmo\n"
                 "\n"
-                )
+            )
+            
             
             # Video frames
             cap: cv2.VideoCapture = cv2.VideoCapture(video_path)
