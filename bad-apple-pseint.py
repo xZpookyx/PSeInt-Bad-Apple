@@ -102,6 +102,8 @@ def generate_file(
                 return
             
             file.write("SubProceso play_video\n")
+            file.write("\tDefinir ms como real;\n")
+            file.write(f"\tms <- {ms};\n")
             
             # for each line in frame
             cap.set(cv2.CAP_PROP_FPS, video_fps)
@@ -123,7 +125,7 @@ def generate_file(
                     file.write(f"\tEscribir \"{row}\";\n")
                 
                 position_ms += ms
-                file.write(f"\tEsperar {ms} Milisegundos;\n")
+                file.write(f"\tEsperar ms Milisegundos;\n")
             
             file.write("FinSubProceso")
 
@@ -197,7 +199,7 @@ def main():
         break
     print("")
     
-    "Generating file..."
+    print("Generating file...")
     
     current_path: str = sys.path[0]
     output_path: str = os.path.join(current_path, f"output/{output_name}.psc")
