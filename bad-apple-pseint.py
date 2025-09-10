@@ -1,12 +1,23 @@
 import cv2
+import numpy as np
+from numpy.typing import NDArray
 import os
 import sys
 
+def light_to_ascii(light: int) -> str:
+    ascii_chars =  " .:-=+*#%@"
+
+    if light > 255: light = 255
+    if light < 0: light = 0
+    light = round(light / 255 * len(ascii_chars))
+    
+    return ascii_chars[light]
+    
 
 def main():
     while True:
         print("Create pseint file")
-        output_name = input("Enter output file name: ")
+        # output_name = input("Enter output file name: ")
         
         # video_path = input("Enter source video path: ")
         
@@ -22,8 +33,10 @@ def main():
         language: int = 0
         
         current_path: str = sys.path[0]
-        output_path: str = os.path.join(current_path, f"output/{output_name}.psc")
+        video_path: str = os.path.join(current_path, "Bad apple.mp4")
+        output_path: str = os.path.join(current_path, f"output/bad_apple.psc")
         video_fps: int = 15
+        resolution: tuple[int, int] = (70, int(70 / (4/3)))
         
         # Generate file
         with open(output_path, "w") as file:
@@ -44,15 +57,40 @@ def main():
                 )
             
             # Video frames
+            cap: cv2.VideoCapture = cv2.VideoCapture(video_path)
             ms: float = 1000 / video_fps
+            
+            if not cap.isOpened():
+                file.write(
+                    "SubProceso play_video\n"
+                    "\tEscribir \"Error\";\n"
+                    "FinSubProceso"
+                )
+                cap.release()
+                break
+            
+            
             file.write("SubProceso play_video\n")
             
             # for each line in frame
-            file.write("\tLimpiar Pantalla;\n")
-            video_line: str = "Placeholder"
-            file.write(f"\tEscribir \"{video_line}\";\n")
+            cap.set(cv2.CAP_PROP_FPS, video_fps)
             
-            file.write(f"\tEsperar {ms} Milisegundos;\n")
+            for frame_index in range(1):
+                file.write("\tLimpiar Pantalla;\n")
+                
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                frame = cv2.resize(frame, (resolution))
+                gray: NDArray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                for i in range(gray.shape[0]):
+                    row: str = ""
+                    for j in range(gray.shape[1]):
+                        row += light_to_ascii(gray[0][1])
+                    file.write(f"\tEscribir \"{row}\";\n")
+                
+                file.write(f"\tEsperar {ms} Milisegundos;\n")
             
             file.write("FinSubProceso")
         
