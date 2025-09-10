@@ -128,96 +128,94 @@ def generate_file(
             file.write("FinSubProceso")
 
 def main():
+    print("Create pseint file")
     while True:
-        print("Create pseint file")
-        while True:
-            video_path = input("Enter source video path: ")
-            
-            if not os.path.exists(video_path):
-                print("Video does not exist")
-                continue
-            
-            if not video_path.endswith(".mp4"):
-                print("Video is not a valid video file")
-                continue
-            break
-        print("")
+        video_path = input("Enter source video path: ")
         
-        while True:
-            user_input = input("Enter video width (in characters): ")
-            
-            if not user_input.isdigit():
-                print("Not a number")
-                continue
-            
-            if int(user_input) <= 0:
-                print("Width must be greater than 0")
-                continue
-            width = int(user_input)
-            break
-        print("")
+        if not os.path.exists(video_path):
+            print("Video does not exist")
+            continue
         
-        while True:
-            user_input = input("Enter video fps: ")
-            
-            if not user_input.isdigit():
-                print("Not a number")
-                continue
-            
-            if int(user_input) <= 0:
-                print("Fps must be greater than 0")
-                continue
-            
-            video_fps = int(user_input)
-            break
-        print("")
+        if not video_path.endswith(".mp4"):
+            print("Video is not a valid video file")
+            continue
+        break
+    print("")
+    
+    while True:
+        user_input = input("Enter video width (in characters): ")
         
-        while True:
-            output_name = input("Enter output file name: ")
-            
-            if len(output_name) == 0:
-                print("Empty name not allowed")
-                continue
-            break
-        print("")
+        if not user_input.isdigit():
+            print("Not a number")
+            continue
         
-        while True:
-            print("1. English")
-            print("2. Spanish")
-            user_input = input("Select output language (1-2): ")
-            
-            if not user_input.isdigit():
-                print("Not a number")
-                continue
-            
-            if not int(user_input) in (1, 2):
-                print("Outside of range")
-                continue
-            
-            language = int(user_input)
-            break
-        print("")
+        if int(user_input) <= 0:
+            print("Width must be greater than 0")
+            continue
+        width = int(user_input)
+        break
+    print("")
+    
+    while True:
+        user_input = input("Enter video fps: ")
         
-        "Generating file..."
+        if not user_input.isdigit():
+            print("Not a number")
+            continue
         
-        current_path: str = sys.path[0]
-        output_path: str = os.path.join(current_path, f"output/{output_name}.psc")
-        resolution: tuple[int, int] = (width, int(width / 3.5))
+        if int(user_input) <= 0:
+            print("Fps must be greater than 0")
+            continue
         
-        # video_path: str = os.path.join(current_path, "Bad apple.mp4")
-        # video_fps: int = 1
-        # resolution: tuple[int, int] = (70, int(70 / 3.5))
+        video_fps = int(user_input)
+        break
+    print("")
+    
+    while True:
+        output_name = input("Enter output file name: ")
         
-        # Generate file
-        generate_file(
-            resolution=resolution,
-            video_path=video_path,
-            output_path=output_path,
-            video_fps=video_fps,
-            language=language
-        )
+        if len(output_name) == 0:
+            print("Empty name not allowed")
+            continue
+        break
+    print("")
+    
+    while True:
+        print("1. English")
+        print("2. Spanish")
+        user_input = input("Select output language (1-2): ")
         
-        sys.exit()
+        if not user_input.isdigit():
+            print("Not a number")
+            continue
+        
+        if not int(user_input) in (1, 2):
+            print("Outside of range")
+            continue
+        
+        language = int(user_input)
+        break
+    print("")
+    
+    "Generating file..."
+    
+    current_path: str = sys.path[0]
+    output_path: str = os.path.join(current_path, f"output/{output_name}.psc")
+    resolution: tuple[int, int] = (width, int(width / 3.5))
+    
+    # video_path: str = os.path.join(current_path, "Bad apple.mp4")
+    # video_fps: int = 1
+    # resolution: tuple[int, int] = (70, int(70 / 3.5))
+    
+    # Generate file
+    generate_file(
+        resolution=resolution,
+        video_path=video_path,
+        output_path=output_path,
+        video_fps=video_fps,
+        language=language
+    )
+        
 
 if __name__ == "__main__":
     main()
